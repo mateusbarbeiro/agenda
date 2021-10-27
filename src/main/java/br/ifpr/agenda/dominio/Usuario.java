@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
@@ -26,11 +27,22 @@ public class Usuario implements Serializable {
 
     private String name;
 
+    @NotNull
     private String username;
 
+    @NotNull
     private String password;
 
     private String role;
+
+    public Usuario(String name, String password) {
+        this.name = name;
+        this.password = password;
+    }
+
+    public Usuario(String name) {
+        this.name = name;
+    }
 
     @Override
     public String toString() {
