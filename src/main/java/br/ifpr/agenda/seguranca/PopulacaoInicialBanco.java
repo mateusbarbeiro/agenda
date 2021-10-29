@@ -2,34 +2,36 @@ package br.ifpr.agenda.seguranca;
 
 import javax.transaction.Transactional;
 
-import br.ifpr.agenda.dominio.Role;
-import br.ifpr.agenda.dominio.Usuario;
-import br.ifpr.agenda.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import br.ifpr.agenda.dominio.Role;
+import br.ifpr.agenda.dominio.Usuario;
+import br.ifpr.agenda.repositories.UsuarioRepository;
+
 @Component
-    @Transactional
-    public class PopulacaoInicialBanco implements CommandLineRunner {
+@Transactional
+@Profile("dev")
+public class PopulacaoInicialBanco implements CommandLineRunner {
 
-        @Autowired
-        private UsuarioRepository usuarioRepository;
+	@Autowired
+	private UsuarioRepository usuarioRepository;
 
-        @Autowired
-        private PasswordEncoder encoder;
+	@Autowired
+	private PasswordEncoder encoder;
 
-        @Override
-        public void run(String... args) throws Exception {
+	@Override
+	public void run(String... args) throws Exception {
 
-
-            Usuario usuarioAdm = new Usuario();
-            usuarioAdm.setUsername("admin");
-            usuarioAdm.setName("admin");
-            usuarioAdm.setPassword(encoder.encode("admin"));
-            usuarioAdm.setRole(Role.ADMIN.getNome());
-            usuarioRepository.save(usuarioAdm);
+		Usuario usuarioAdm = new Usuario();
+		usuarioAdm.setUsername("admin");
+		usuarioAdm.setName("admin");
+		usuarioAdm.setPassword(encoder.encode("admin"));
+		usuarioAdm.setRole(Role.ADMIN.getNome());
+		usuarioRepository.save(usuarioAdm);
 
 //            File jsonFile = ResourceUtils.getFile("classpath:municipios.json");
 //            ObjectMapper cidadeMapper = new ObjectMapper();
@@ -79,5 +81,5 @@ import org.springframework.stereotype.Component;
 //            pessoaRepo.save(p2);
 //            pessoaRepo.save(p3);
 
-    }
+	}
 }
