@@ -19,19 +19,39 @@ public class ContatoRepositoryCustomImpl implements ContatoRepositoryCustom {
 	@Override
 	@Transactional
 	public Optional<Contato> findCompletoById(Long id) {
-		List<Contato> contatos = em.createQuery("select distinct c from Contato c left join fetch c.enderecos e where c.id = :id", Contato.class)
+		List<Contato> contatos = em.createQuery("select distinct c from Contato c left join fetch c.usuario u left join fetch c.enderecos e where c.id = :id", Contato.class)
 									.setParameter("id", id)
 									.setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
 									.getResultList();
 		
 		if (contatos == null || contatos.isEmpty()) return Optional.empty();
 		
-		contatos = em.createQuery("select distinct c from Contato c left join fetch c.telefones t where c IN :contatos", Contato.class)
+		contatos = em.createQuery("select distinct c from Contato c left join fetch c.usuario u left join fetch c.telefones t where c IN :contatos", Contato.class)
 				.setParameter("contatos", contatos)
 				.setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
 				.getResultList();
 		
 		return Optional.of(contatos.get(0));
+	}
+
+
+	@Override
+	@Transactional
+	public List<Contato> findContatoByUsuarioIdNew(Long id) {
+
+		List<Contato> contatos = em.createQuery("select distinct c from Contato c left join fetch c.usuario u left join fetch c.enderecos e where u.id = :id", Contato.class)
+				.setParameter("id", id)
+				.setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
+				.getResultList();
+
+		if (contatos == null || contatos.isEmpty()) return null;
+
+		contatos = em.createQuery("select distinct c from Contato c left join fetch c.usuario u left join fetch c.telefones t where c IN :contatos", Contato.class)
+				.setParameter("contatos", contatos)
+				.setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
+				.getResultList();
+
+		return contatos;
 	}
 
 }

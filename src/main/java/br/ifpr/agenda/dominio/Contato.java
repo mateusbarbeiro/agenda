@@ -6,12 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -41,7 +36,10 @@ public class Contato implements Serializable {
 
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private LocalDate dataNascimento;
-	
+
+	@ManyToOne
+	private Usuario usuario;
+
 	@OneToMany
 	(
 		cascade = CascadeType.ALL, 
@@ -58,7 +56,7 @@ public class Contato implements Serializable {
 	)
 	@Size(min = 1, message = "Telefone obrigatório")
 	private List<Telefone> telefones = new ArrayList<>();
-	
+
 	public Contato(final String nome) {
 		this.nome = nome;
 	}
@@ -127,5 +125,53 @@ public class Contato implements Serializable {
 		for (Endereco endereco : enderecosVazios) {
 			removeEndereco(endereco);
 		}
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public String getSobrenome() {
+		return sobrenome;
+	}
+
+	public void setSobrenome(String sobrenome) {
+		this.sobrenome = sobrenome;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public LocalDate getDataNascimento() {
+		return dataNascimento;
+	}
+
+	public void setDataNascimento(LocalDate dataNascimento) {
+		this.dataNascimento = dataNascimento;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 }
