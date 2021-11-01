@@ -35,15 +35,6 @@ public class Usuario implements Serializable {
 
     private String role;
 
-    public Usuario(String name, String password) {
-        this.name = name;
-        this.password = password;
-    }
-
-    public Usuario(String name) {
-        this.name = name;
-    }
-
     @Override
     public String toString() {
         return "Usuario [nome=" + name + ", email=" + username + ", password="

@@ -37,6 +37,38 @@ public class Telefone implements Serializable {
 	@ManyToOne
 	private Contato contato;
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public TipoTelefone getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipoTelefone tipo) {
+		this.tipo = tipo;
+	}
+
+	public String getNumero() {
+		return numero;
+	}
+
+	public void setNumero(String numero) {
+		this.numero = numero;
+	}
+
+	public Contato getContato() {
+		return contato;
+	}
+
+	public void setContato(Contato contato) {
+		this.contato = contato;
+	}
+
 	public Telefone(String numero) {
 		this.numero = numero;
 	}

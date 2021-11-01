@@ -3,6 +3,11 @@ package br.ifpr.agenda.controllers;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import br.ifpr.agenda.dominio.Usuario;
+import br.ifpr.agenda.repositories.UsuarioRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,16 +25,23 @@ import br.ifpr.agenda.repositories.ContatoRepository;
 public class ContatoController {
 
 	private ContatoRepository contatoRepository;
-	
-	public ContatoController(ContatoRepository contatoRepository) {
+	private UsuarioRepository usuarioRepository;
+
+	public ContatoController(ContatoRepository contatoRepository, UsuarioRepository usuarioRepository) {
 		this.contatoRepository = contatoRepository;
+		this.usuarioRepository = usuarioRepository;
 	}
-	
+
+
 	@RequestMapping("/")
-	public String getContatos(Model model) {
-		
-		model.addAttribute("contatos", contatoRepository.findAll());
-		
+	public String getContatos(Model model, Authentication authentication) {
+
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+		Usuario usuarioLogado = usuarioRepository.findByUsername(userDetails.getUsername());
+
+		model.addAttribute("contatos", contatoRepository.findContatoByUsuarioIdNew(usuarioLogado.getId()));
+
 		return "contatos/index";
 	}
 	
@@ -61,7 +73,13 @@ public class ContatoController {
 	}
 	
 	@PostMapping("/contatos/salvar")
-	public String salvarContato(@Valid Contato contato, BindingResult bindingResult, Model model) {
+	public String salvarContato(@Valid Contato contato, BindingResult bindingResult, Model model, Authentication authentication) {
+		if (contato.getUsuario() == null) {
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			Usuario usuarioLogado = usuarioRepository.findByUsername(userDetails.getUsername());
+			contato.setUsuario(usuarioLogado);
+		}
+
 		if (bindingResult.hasErrors()) {
 			return "contatos/editar";
 		}
