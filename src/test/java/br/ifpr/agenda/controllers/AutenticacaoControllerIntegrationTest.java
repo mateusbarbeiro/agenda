@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,37 @@ public class AutenticacaoControllerIntegrationTest {
 		
 		List<Usuario> usuarios = repositorio.findAll();
 		assertThat(usuarios, hasSize(1));
+		Assert.assertEquals(usuarios.get(0).getUsername(), "jose");
+		Assert.assertEquals(usuarios.get(0).getName(), "Jose");
 		//da pra verificar se o usuario tem os mesmos dados (exceto a senha) que cadastramos
 	}
 
+	@Test
+	public void formLoginUsuario() throws Exception {
+		//Teste de que a rota de login esta retornando a view correta
+		mockMvc.perform(get("/login"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("autenticacao/login"));
+	}
+
+	@Test
+	public void loginUsuarioSuccesso() throws Exception {
+		// Cadastra usuario para teste de login
+		mockMvc.perform(post("/usuario/salvar")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+				.param("name", "Jose")
+				.param("username", "jose")
+				.param("password", "password"));
+
+		// Teste de que a rota de login de usuario esta funcionando
+		mockMvc.perform(post("/login")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+				.param("username", "jose")
+				.param("password", "password"))
+				.andExpect(status().is2xxSuccessful());
+
+		List<Usuario> usuarios = repositorio.findAll();
+		assertThat(usuarios, hasSize(1));
+		//da pra verificar se o usuario tem os mesmos dados (exceto a senha) que cadastramos
+	}
 }
